@@ -5,30 +5,30 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dizdarevic.weatherapp.databinding.FragmentMainBinding
-import com.dizdarevic.weatherapp.models.Weather
 import com.dizdarevic.weatherapp.repository.MainRepository
-import com.dizdarevic.weatherapp.repository.RetrofitService
+import com.dizdarevic.weatherapp.repository.RetrofitService.Companion.getInstance
+import com.dizdarevic.weatherapp.ui.adapters.RVWeatherAdapter
+import com.dizdarevic.weatherapp.ui.viewmodels.MainViewModel
+import com.dizdarevic.weatherapp.ui.viewmodels.MainViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainFragment : Fragment() {
     lateinit var binding:FragmentMainBinding
     private val TAG = "MainFragment"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    val adapter= RVWeatherAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,38 +86,37 @@ class MainFragment : Fragment() {
 
     }
 
+    @SuppressLint("MissingPermission")
     private fun loadData() {
+        binding.rvWeather.adapter = adapter
+        binding.rvWeather.layoutManager= LinearLayoutManager(requireContext())
+
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        val repository = MainRepository(RetrofitService.getInstance())
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
-            return
-        }
 
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location : Location? ->
                 location?.let {
-                    val response = repository.getWeather(it.latitude, it.latitude)
-
-                    response.enqueue(object : Callback<Weather> {
-                        override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
-                            setData(response.body())
+                    val viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(MainRepository(getInstance()))).get(
+                        MainViewModel::class.java)
+                    viewModel.getWeather(it.latitude, it.latitude)
+                    viewModel.weather.observe(viewLifecycleOwner, Observer {
+                        val list=it.hourly.sortedBy {
+                            it.dt
+                        }.filterIndexed { index, hourly ->
+                            index<25
                         }
+                        adapter.setWeather(list)
+                    })
 
-                        override fun onFailure(call: Call<Weather>, t: Throwable) {
-                            Toast.makeText(requireContext(), t.message, Toast.LENGTH_SHORT).show()
-                            Log.i(TAG, "onFailure: "+t.message)
-                        }
+                    viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                     })
                 }
             }
             .addOnFailureListener {
                 it.printStackTrace()
             }
-    }
-
-    private fun setData(body: Weather?) {
-        binding.test.text=body.toString()
     }
 }

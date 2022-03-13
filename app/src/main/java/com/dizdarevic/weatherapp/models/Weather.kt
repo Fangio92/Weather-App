@@ -1,5 +1,7 @@
 package com.dizdarevic.weatherapp.models
 
+
+
 data class Weather(
     val alerts: List<Alert>,
     val current: Current,
