@@ -72,4 +72,8 @@ dependencies {
     //Android Navigation Architecture
     implementation "androidx.navigation:navigation-fragment-ktx:2.4.1"
     implementation "androidx.navigation:navigation-ui-ktx:2.4.1"
+
+    //Location
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+
 }
