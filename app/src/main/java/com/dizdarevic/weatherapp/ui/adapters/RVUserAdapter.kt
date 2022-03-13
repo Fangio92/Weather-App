@@ -22,7 +22,7 @@ class RVUserAdapter:RecyclerView.Adapter<MainViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        
+
     }
 
     override fun getItemCount(): Int {

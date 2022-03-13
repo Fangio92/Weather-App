@@ -1,5 +1,5 @@
 package com.dizdarevic.weatherapp
 
 object Constants {
-    const val API="api.openweathermap.org/data/2.5/"
+    const val API="https://api.openweathermap.org/data/2.5/"
 }
