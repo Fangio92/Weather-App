@@ -75,7 +75,7 @@ class MainFragment : Fragment() {
     private fun loadData() {
         binding.rvWeather.adapter = adapter
         binding.rvWeather.layoutManager= LinearLayoutManager(requireContext())
-        
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         fusedLocationClient.lastLocation
