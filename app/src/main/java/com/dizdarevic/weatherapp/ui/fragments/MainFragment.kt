@@ -98,7 +98,7 @@ class MainFragment : Fragment() {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location : Location? ->
                 location?.let {
-                    val viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(MainRepository(getInstance()))).get(
+                    val viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(requireContext(), MainRepository(getInstance()))).get(
                         MainViewModel::class.java)
                     viewModel.getWeather(it.latitude, it.latitude)
                     viewModel.weather.observe(viewLifecycleOwner, Observer {
