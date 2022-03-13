@@ -1,6 +1,8 @@
 package com.dizdarevic.weatherapp.ui.viewmodels
 
+import android.appwidget.AppWidgetManager.ACTION_APPWIDGET_UPDATE
 import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,6 +36,10 @@ class MainViewModel constructor(private val context: Context, private val reposi
                         withContext(Dispatchers.IO) {
                             val weatherDAO = WeatherDatabase(context).WeatherDAO()
                             weatherDAO.insert(it)
+
+                            val intent = Intent(ACTION_APPWIDGET_UPDATE)
+                            intent.putExtra("temp", it.current?.temp)
+                            context.sendBroadcast(intent)
                         }
                     }
                 }

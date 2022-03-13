@@ -25,7 +25,7 @@
         <receiver android:name=".widget.WeatherWidget"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.dizdarevic.weatherapp.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
