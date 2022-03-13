@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dizdarevic.weatherapp.databinding.AdapterWeatherBinding
-import com.dizdarevic.weatherapp.models.Daily
 import com.dizdarevic.weatherapp.models.Hourly
 
 
