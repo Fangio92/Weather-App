@@ -11,8 +11,6 @@ import com.dizdarevic.weatherapp.models.Hourly
 class RVWeatherAdapter:RecyclerView.Adapter<MainViewHolder>() {
     private var hourly: List<Hourly>?=null
 
-    private val TAG = "RVWeatherAdapter"
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
@@ -29,14 +27,13 @@ class RVWeatherAdapter:RecyclerView.Adapter<MainViewHolder>() {
         holder.binding.tvWind.text=hour?.wind_speed.toString()
         holder.binding.tvTemp.text=hour?.temp.toString()
 
-        Log.i(TAG, "onBindViewHolder: "+hour?.dt)
     }
 
     override fun getItemCount(): Int {
         return hourly?.size?: 0
     }
 
-    fun setWeather(weather: List<Hourly>) {
+    fun setWeather(weather: List<Hourly>?) {
         this.hourly=weather
         notifyDataSetChanged()
     }
